@@ -1,30 +1,69 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Heart, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { SearchBar } from '@/components/common/SearchBar'
 import { useFavoritesCount } from '@/features/favorites/hooks'
+import { useScrollDirection } from '@/hooks'
 import { cn } from '@/lib/utils'
 
 export function Header() {
   const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
   const { data: favoritesCount = 0 } = useFavoritesCount()
+  const scrollDirection = useScrollDirection(10)
   
   const isActive = (path: string) => location.pathname === path
+
+  // Handle scroll direction changes
+  useEffect(() => {
+    if (scrollDirection === 'down') {
+      setIsVisible(false)
+      // Close mobile menu when hiding header
+      setIsMenuOpen(false)
+    } else if (scrollDirection === 'up' || scrollDirection === null) {
+      setIsVisible(true)
+    }
+  }, [scrollDirection])
+
+  // Show header on click anywhere on the page
+  useEffect(() => {
+    const handleClick = () => {
+      setIsVisible(true)
+    }
+
+    document.addEventListener('click', handleClick)
+
+    return () => {
+      document.removeEventListener('click', handleClick)
+    }
+  }, [])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false)
+    setIsVisible(true)
+  }, [location.pathname])
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header 
+      className={cn(
+        'sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+        'transition-transform duration-300 ease-in-out',
+        !isVisible && '-translate-y-full'
+      )}
+    >
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="flex items-center space-x-2"
           aria-label="Recipes PWA Home"
         >
           <span className="text-2xl">🍳</span>
-          <span className="font-bold text-xl hidden sm:inline">Recipes</span>
+          <span className="font-bold text-xl">Recipes</span>
         </Link>
         
         {/* Desktop Navigation */}
@@ -69,7 +108,10 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsMenuOpen(!isMenuOpen)
+            }}
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMenuOpen}
           >

@@ -5,3 +5,4 @@
 
 export { useOnlineStatus } from './useOnlineStatus'
 export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop } from './useMediaQuery'
+export { useScrollDirection, useClickDetection } from './useScrollDirection'
