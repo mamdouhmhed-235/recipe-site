@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Sparkles } from 'lucide-react'
 import { searchMeals, getCategories, filterByCategory, getRandomMeal } from '@/lib/api'
@@ -9,8 +9,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/common/EmptyState'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 
+// Number of random meals to show on homepage
+const RANDOM_MEALS_COUNT = 8
+
 export function Home() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const searchQuery = searchParams.get('q') || ''
   const selectedCategory = searchParams.get('category') || ''
   
@@ -34,21 +38,39 @@ export function Home() {
     enabled: !!selectedCategory && !searchQuery
   })
   
-  // Random meal
-  const { refetch: refetchRandom } = useQuery({
-    queryKey: ['random'],
-    queryFn: getRandomMeal,
-    enabled: false
+  // Random meals for homepage - fetch multiple random meals
+  const { data: randomMealsData, isLoading: randomLoading, refetch: refetchRandom } = useQuery({
+    queryKey: ['random-meals'],
+    queryFn: async () => {
+      // Fetch multiple random meals in parallel
+      const promises = Array.from({ length: RANDOM_MEALS_COUNT }, () => getRandomMeal())
+      const results = await Promise.all(promises)
+      return { meals: results.filter(Boolean) }
+    },
+    enabled: !searchQuery && !selectedCategory,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   })
   
   const categories = categoriesData?.categories || []
-  const meals = searchQuery 
+  const meals = searchQuery
     ? (searchData?.meals || [])
-    : selectedCategory 
+    : selectedCategory
       ? (categoryData?.meals || [])
-      : []
+      : (randomMealsData?.meals || [])
   
-  const isLoading = searchLoading || categoryLoading
+  const isLoading = searchLoading || categoryLoading || randomLoading
+  
+  // Handle random recipe button click - navigate to the recipe
+  const handleRandomRecipe = async () => {
+    try {
+      const meal = await getRandomMeal()
+      if (meal?.idMeal) {
+        navigate(`/meal/${meal.idMeal}`)
+      }
+    } catch (error) {
+      console.error('Failed to fetch random meal:', error)
+    }
+  }
   
   return (
     <div className="space-y-8">
@@ -60,8 +82,8 @@ export function Home() {
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
           Browse thousands of recipes from around the world. Save your favorites and access them offline.
         </p>
-        <Button 
-          onClick={() => refetchRandom()}
+        <Button
+          onClick={handleRandomRecipe}
           variant="outline"
           size="lg"
         >
@@ -95,11 +117,11 @@ export function Home() {
       {/* Results */}
       <section aria-label="Recipe results">
         <h2 className="text-2xl font-semibold mb-4">
-          {searchQuery 
+          {searchQuery
             ? `Search results for "${searchQuery}"`
-            : selectedCategory 
+            : selectedCategory
               ? `${selectedCategory} Recipes`
-              : 'Select a category or search for recipes'}
+              : 'Featured Recipes'}
         </h2>
         
         {isLoading ? (
@@ -115,8 +137,8 @@ export function Home() {
         ) : (
           <EmptyState
             icon="🍳"
-            title="Start exploring"
-            description="Search for recipes or select a category to get started"
+            title="Loading recipes..."
+            description="Please wait while we fetch some delicious recipes for you"
           />
         )}
       </section>

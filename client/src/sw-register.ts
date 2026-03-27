@@ -44,11 +44,9 @@ export async function registerSW(): Promise<SWRegistration> {
       }
     });
     
-    // Check if controller changed (new SW activated)
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      // Reload page to use new service worker
-      window.location.reload();
-    });
+    // Note: We don't auto-reload on controllerchange anymore
+    // This was causing navigation issues when SW updated during page transitions
+    // Users will be prompted to update via the UpdatePrompt component instead
     
     // Mark as offline ready after first install
     if (registration.active) {
