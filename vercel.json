@@ -1,21 +1,11 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "version": 2,
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/dist",
   "framework": "vite",
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
-    { "source": "/api/search", "destination": "/api/search" },
-    { "source": "/api/meal/:id", "destination": "/api/meal/:id" },
-    { "source": "/api/categories", "destination": "/api/categories" },
-    { "source": "/api/filter", "destination": "/api/filter" },
-    { "source": "/api/random", "destination": "/api/random" },
-    { "source": "/health", "destination": "/health" },
-    { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
