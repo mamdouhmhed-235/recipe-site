@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -10,33 +10,54 @@ interface SearchBarProps {
   className?: string
 }
 
-export function SearchBar({ 
+export function SearchBar({
   placeholder = 'Search recipes...',
-  className 
+  className
 }: SearchBarProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const [value, setValue] = useState(searchParams.get('q') || '')
+  const isFirstRender = useRef(true)
   
-  // Debounced search
+  // Debounced search - only navigate when user is actively typing on home page
   const debouncedSearch = useCallback(
     debounce((query: string) => {
-      if (query.trim()) {
-        navigate(`/?q=${encodeURIComponent(query.trim())}`)
-      } else {
-        navigate('/')
+      // Only navigate if we're on the home page or search results page
+      if (location.pathname === '/') {
+        if (query.trim()) {
+          navigate(`/?q=${encodeURIComponent(query.trim())}`)
+        } else {
+          navigate('/')
+        }
       }
     }, 300),
-    [navigate]
+    [navigate, location.pathname]
   )
   
   useEffect(() => {
+    // Skip the first render to prevent automatic navigation
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     debouncedSearch(value)
   }, [value, debouncedSearch])
   
+  // Update value when URL changes (e.g., when clearing search from elsewhere)
+  useEffect(() => {
+    const urlQuery = searchParams.get('q') || ''
+    if (urlQuery !== value && location.pathname === '/') {
+      setValue(urlQuery)
+    }
+  }, [searchParams, location.pathname, value])
+  
   const handleClear = () => {
     setValue('')
-    navigate('/')
+    // Only navigate to home if not already there
+    if (location.pathname !== '/') {
+      navigate('/')
+    }
   }
   
   return (

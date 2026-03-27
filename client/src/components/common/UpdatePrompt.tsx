@@ -29,14 +29,9 @@ export function UpdatePrompt() {
         })
       })
 
-      // Listen for controller change (when new SW takes over)
-      let refreshing = false
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true
-          window.location.reload()
-        }
-      })
+      // Note: We don't auto-reload on controllerchange anymore
+      // This was causing navigation issues when SW updated during page transitions
+      // Users will click "Refresh Now" button to apply updates instead
     }
   }, [])
 
