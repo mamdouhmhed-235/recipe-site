@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Heart, Menu, X } from 'lucide-react'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { SearchBar } from '@/components/common/SearchBar'

@@ -15,7 +15,6 @@ const PRECACHE_ASSETS = [
   '/index.html',
   '/offline.html',
   '/manifest.webmanifest',
-  '/icons/favicon.ico',
   '/icons/apple-touch-icon.png',
   '/icons/pwa-192x192.png',
   '/icons/pwa-512x512.png'

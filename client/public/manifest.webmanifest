@@ -35,34 +35,18 @@
       "type": "image/png"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/icons/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/icons/screenshot-narrow.png",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
   "shortcuts": [
     {
       "name": "Favorites",
       "short_name": "Favorites",
       "description": "View your saved favorite recipes",
-      "url": "/favorites",
-      "icons": [{ "src": "/icons/heart.png", "sizes": "96x96" }]
+      "url": "/favorites"
     },
     {
       "name": "Search",
       "short_name": "Search",
       "description": "Search for recipes",
-      "url": "/?focus=search",
-      "icons": [{ "src": "/icons/search.png", "sizes": "96x96" }]
+      "url": "/?focus=search"
     }
   ],
   "related_applications": [],

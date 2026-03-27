@@ -39,7 +39,7 @@ export function Home() {
   })
   
   // Random meals for homepage - fetch multiple random meals
-  const { data: randomMealsData, isLoading: randomLoading, refetch: refetchRandom } = useQuery({
+  const { data: randomMealsData, isLoading: randomLoading } = useQuery({
     queryKey: ['random-meals'],
     queryFn: async () => {
       // Fetch multiple random meals in parallel

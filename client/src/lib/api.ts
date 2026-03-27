@@ -1,5 +1,8 @@
 import type { Meal, Category, MealSummary } from './types'
 
+// Re-export types for convenience
+export type { Meal, Category, MealSummary }
+
 const API_BASE = '/api'
 
 /**

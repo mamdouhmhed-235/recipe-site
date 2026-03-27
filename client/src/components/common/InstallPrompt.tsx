@@ -7,24 +7,35 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
+// Helper functions to detect platform state
+const detectIOS = (): boolean => {
+  if (typeof window === 'undefined') return false
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const win = window as any
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !win.MSStream
+}
+
+const detectStandalone = (): boolean => {
+  if (typeof window === 'undefined') return false
+  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isIOSStandalone = (window.navigator as any).standalone === true
+  return isInStandaloneMode || isIOSStandalone
+}
+
+// Initialize once at module level to avoid setState in effect
+const initialIsIOS = detectIOS()
+const initialIsStandalone = detectStandalone()
+
 export function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
-  const [isIOS, setIsIOS] = useState(false)
-  const [isStandalone, setIsStandalone] = useState(false)
+  const [isIOS] = useState(initialIsIOS)
+  const [isStandalone] = useState(initialIsStandalone)
 
   useEffect(() => {
-    // Detect iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
-    setIsIOS(isIOSDevice)
-
-    // Detect if already in standalone mode
-    const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches
-    const isIOSStandalone = (window.navigator as any).standalone === true
-    setIsStandalone(isInStandaloneMode || isIOSStandalone)
-
     // Only show prompt if not already installed
-    if (!isInStandaloneMode && !isIOSStandalone) {
+    if (!isStandalone) {
       const handler = (e: Event) => {
         e.preventDefault()
         setDeferredPrompt(e as BeforeInstallPromptEvent)
@@ -37,7 +48,7 @@ export function InstallPrompt() {
         window.removeEventListener('beforeinstallprompt', handler)
       }
     }
-  }, [])
+  }, [isStandalone])
 
   const handleInstall = async () => {
     if (!deferredPrompt) return

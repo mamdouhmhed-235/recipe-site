@@ -38,7 +38,7 @@ test.describe('PWA', () => {
     
     // Should show offline fallback or cached content
     const content = await page.content()
-    expect(content).toContain('offline' || 'Favorites')
+    expect(content.includes('offline') || content.includes('Favorites')).toBeTruthy()
   })
 
   test('app is installable', async ({ page }) => {
