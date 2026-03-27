@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, MapPin, Clock, ExternalLink, Video } from 'lucide-react'
+import { ArrowLeft, MapPin, Clock, ExternalLink, Video, ChefHat } from 'lucide-react'
 import { getMealById } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +11,7 @@ import { FavoriteButton } from '@/components/recipe/FavoriteButton'
 import { YouTubeEmbed } from '@/components/recipe/YouTubeEmbed'
 import { EmptyState } from '@/components/common/EmptyState'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
+import { parseInstructions } from '@/lib/utils'
 
 export function Details() {
   const { id } = useParams<{ id: string }>()
@@ -109,16 +110,22 @@ export function Details() {
         
         {/* Instructions */}
         <div className="md:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Instructions</h2>
-          <div className="prose dark:prose-invert max-w-none">
-            {meal.strInstructions?.split('\n').map((paragraph, index) => (
-              paragraph.trim() && (
-                <p key={index} className="mb-4 text-muted-foreground leading-relaxed">
-                  {paragraph}
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <ChefHat className="h-5 w-5" />
+            Instructions
+          </h2>
+          <ol className="space-y-4">
+            {parseInstructions(meal.strInstructions).map((step, index) => (
+              <li key={index} className="flex gap-4">
+                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-semibold text-sm">
+                  {index + 1}
+                </span>
+                <p className="text-muted-foreground leading-relaxed pt-1">
+                  {step}
                 </p>
-              )
+              </li>
             ))}
-          </div>
+          </ol>
           
           {/* YouTube Video */}
           {meal.strYoutube && (
@@ -135,9 +142,9 @@ export function Details() {
           {meal.strSource && (
             <div className="mt-6">
               <Button variant="outline" asChild>
-                <a 
-                  href={meal.strSource} 
-                  target="_blank" 
+                <a
+                  href={meal.strSource}
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
