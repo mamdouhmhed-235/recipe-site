@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>Offline - Recipes PWA</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 12px;
+      font-size: 24px;
+    }
+    
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .tips {
+      margin-top: 32px;
+      text-align: left;
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+    }
+    
+    .tips h3 {
+      color: #333;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    
+    .tips ul {
+      color: #666;
+      font-size: 14px;
+      padding-left: 20px;
+    }
+    
+    .tips li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>
+      It looks like you've lost your internet connection. 
+      Don't worry - you can still view your saved favorite recipes!
+    </p>
+    <a href="/favorites" class="button">View Favorites</a>
+    
+    <div class="tips">
+      <h3>💡 Tips while offline:</h3>
+      <ul>
+        <li>Your favorites are saved locally and always available</li>
+        <li>Search and browsing require an internet connection</li>
+        <li>Check your connection and try again</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    // Auto-redirect to favorites if already on app
+    if (window.location.pathname !== '/offline') {
+      window.location.href = '/favorites';
+    }
+    
+    // Listen for online event
+    window.addEventListener('online', () => {
+      window.location.href = '/';
+    });
+  </script>
+</body>
+</html>

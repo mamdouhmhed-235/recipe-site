@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Browse recipes from TheMealDB, save favorites offline, and cook anytime" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://recipes-pwa.vercel.app/" />
+    <meta property="og:title" content="Recipes PWA - Browse & Save Your Favorite Recipes" />
+    <meta property="og:description" content="Browse recipes from TheMealDB, save favorites offline, and cook anytime" />
+    <meta property="og:image" content="https://recipes-pwa.vercel.app/icons/pwa-512x512.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://recipes-pwa.vercel.app/" />
+    <meta name="twitter:title" content="Recipes PWA - Browse & Save Your Favorite Recipes" />
+    <meta name="twitter:description" content="Browse recipes from TheMealDB, save favorites offline, and cook anytime" />
+    <meta name="twitter:image" content="https://recipes-pwa.vercel.app/icons/pwa-512x512.png" />
+    
+    <!-- Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Recipes PWA" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://recipes-pwa.vercel.app/" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Recipes PWA",
+      "description": "Browse recipes from TheMealDB, save favorites offline, and cook anytime",
+      "url": "https://recipes-pwa.vercel.app/",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Recipes PWA</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
